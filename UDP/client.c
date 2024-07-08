@@ -7,14 +7,14 @@
 
 void main(){
 
-    int cs, port; // initialize clientsocket, port
+    int sockfd, port; // initialize clientsocket, port
     struct sockaddr_in server; // initialize client socket address
     socklen_t len; // initialize length of socket
     
     int flag, res;
     char buffer[20]; // Change response size to hold single character
 
-    cs = socket(AF_INET, SOCK_DGRAM, 0); // create socket for client with IPv4, UDP, default protocol
+    sockfd = socket(AF_INET, SOCK_DGRAM, 0); // create socket for client with IPv4, UDP, default protocol
     len = sizeof(server); // set length of client socket address
     server.sin_family = AF_INET; // set server socket address family to IPv4
     printf("Enter the port number: ");
@@ -27,9 +27,9 @@ void main(){
         scanf("%s", buffer);
         printf("Client: %s\n", buffer);
 
-        sendto(cs, buffer, sizeof(buffer), 0, (struct sockaddr *)&server, sizeof(server)); // send message to server
+        sendto(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&server, len); // send message to server
         
-        recvfrom(cs, &flag, sizeof(flag), 0, (struct sockaddr *)&server, &len); // receive message from server
+        recvfrom(sockfd, &flag, sizeof(flag), 0, (struct sockaddr *)&server, &len); // receive message from server
 
         if (flag == 1){
             printf("Server: the string is a palindrome.\n");
@@ -41,5 +41,5 @@ void main(){
         scanf("%d", &res);
     } while (res == 1); // Loop until user inputs '0' (no)
 
-    close(cs);
+    close(sockfd);
 }

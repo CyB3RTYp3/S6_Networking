@@ -49,5 +49,5 @@ void main() {
     }
 
     close(newsockfd);
-    close(s);
+    close(sockfd);
 }

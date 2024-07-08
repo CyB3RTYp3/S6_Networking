@@ -8,16 +8,16 @@
 
 int main()
 {
-    struct sockaddr_in client;
+    struct sockaddr_in sever;
     int sockfd, flag;
     char buffer[20], response[2]; // Change response size to hold single character
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    client.sin_family = AF_INET;
-    client.sin_port = htons(2000); // Use htons() to convert port to network byte order
-    client.sin_addr.s_addr = inet_addr("127.0.0.1");
+    sever.sin_family = AF_INET;
+    sever.sin_port = htons(2000); // Use htons() to convert port to network byte order
+    sever.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    connect(sockfd, (struct sockaddr *)&client, sizeof(client));
+    connect(sockfd, (struct sockaddr *)&sever, sizeof(sever));
 
     do { // Loop until user inputs '0' (no)
         printf("\nEnter a string to check palindrome: ");

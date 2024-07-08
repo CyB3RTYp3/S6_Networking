@@ -25,7 +25,7 @@ void main()
 
     printf("Listening for client connection...\n");
 
-    len = sizeof(server); // set length of client socket address
+    len = sizeof(client); // set length of client socket address
 
     for (;;)
     {

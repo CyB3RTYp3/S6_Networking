@@ -1,71 +1,75 @@
 #include <stdio.h>
 
-int main()
-{
-    int count, src_router, i, j, k, w, v, min;
-    int cost_matrix[100][100], dist[100], last[100];
-    int flag[100];
+int  costMat[20][20],dist[20],last[20],flag[20],src_router;
 
-    printf("\n Enter the no of routers");
-    scanf("%d", &count);
-    printf("\n Enter the cost matrix values:");
+void readMat(int n){
+    int i,j;
+    printf("Enter the cost matrix\n");
+        for(i=0; i<n; i++)
+            for (int j = 0; j <n; j++){
+                printf("%d==>%d: ",i,j);
+                scanf("%d",&costMat[i][j]);
 
-    for (i = 0; i < count; i++)
-    {
-        for (j = 0; j < count; j++)
-        {
-            printf("\n%d->%d:", i, j);
-            scanf("%d", &cost_matrix[i][j]);
-            if (cost_matrix[i][j] < 0)
-                cost_matrix[i][j] = 1000;
-        }
+                if(costMat[i][j]<0)
+                    costMat[i][j]=1000;
+         }       
+}
+
+void calcMat(int n){
+ int i,j,min,ind;
+
+ for(i=0;i<n;i++){
+    min=1000;
+    for(j=0;j<n;j++){
+        if(!flag[j])
+            if(dist[j]<min){
+                min=dist[j];
+                ind=j;
+            }
     }
 
-    printf("\n Enter the source router:");
-    scanf("%d", &src_router);
+    flag[ind]=1;
 
-    for (v = 0; v < count; v++)
-    {
-        flag[v] = 0;
-        last[v] = src_router;
-        dist[v] = cost_matrix[src_router][v];
-    }
-    flag[src_router] = 1;
-
-    for (i = 0; i < count; i++)
-    {
-        min = 1000;
-        for (w = 0; w < count; w++)
-        {
-            if (!flag[w])
-                if (dist[w] < min)
-                {
-                    v = w;
-                    min = dist[w];
-                }
-        }
-        flag[v] = 1;
-        for (w = 0; w < count; w++)
-        {
-            if (!flag[w])
-                if (min + cost_matrix[v][w] < dist[w])
-                {
-                    dist[w] = min + cost_matrix[v][w];
-                    last[w] = v;
-                }
+    for(j=0;j<n;j++){
+        if(!flag[j]){
+            if(dist[j]>min+costMat[ind][j]){
+                dist[j]=costMat[ind][j]+min;
+                last[j]=ind;
+            }
         }
     }
+ }
+}
 
-    for (i = 0; i < count; i++)
-    {
-        printf("\n%d==>%d:Path taken:%d", src_router, i, i);
-        w = i;
-        while (w != src_router)
-        {
-
-            printf("<--%d", last[w]);
-            w = last[w];
+void display(int n){
+    int i,j;
+    for(i=0;i<n;i++){
+        printf("%d==>%d: Path taken:%d ",src_router,i,i);
+        j=i;
+        while(j!=src_router){
+            printf("<--%d",last[j]);
+            j=last[j];
         }
-        printf("\n Shortest path cost:%d", dist[i]);
+        printf("\nShoterst distance : %d \n",dist[i]);      
     }
+}
+
+int main(){
+    int  i,j,count;
+
+    printf("Enter the number of Routers\n");
+    scanf("%d",&count);
+    readMat(count);
+    printf("Enter the source router := ");
+    scanf("%d",&src_router);
+
+    for(i=0;i<count;i++){
+        flag[i]=0;
+        last[i]=src_router;
+        dist[i]=costMat[src_router][i];
+    }
+    flag[src_router]=1;
+
+    calcMat(count);
+    display(count);
 }
