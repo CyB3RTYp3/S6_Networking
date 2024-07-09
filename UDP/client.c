@@ -1,45 +1,29 @@
-#include <stdio.h>      // for printf(), scanf()
-#include <string.h>     // for memset(), strlen()
-#include <sys/socket.h> // for socket(), sendto(), recvfrom()
-#include <netinet/in.h> // for struct sockaddr_in
-#include <arpa/inet.h>  // for htons()
-#include <unistd.h>     // for close()
+#include <stdio.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <strings.h>
+#include <netdb.h>
+#include <unistd.h>
+#define PORT 8080
 
-void main(){
+int main(){
 
-    int sockfd, port; // initialize clientsocket, port
-    struct sockaddr_in server; // initialize client socket address
-    socklen_t len; // initialize length of socket
-    
-    int flag, res;
-    char buffer[20]; // Change response size to hold single character
+    struct sockaddr_in serveraddr;
+    int serversocket;
+    socklen_t len;
+    char b1[20];
 
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0); // create socket for client with IPv4, UDP, default protocol
-    len = sizeof(server); // set length of client socket address
-    server.sin_family = AF_INET; // set server socket address family to IPv4
-    printf("Enter the port number: ");
-    scanf("%d", &port); // get port number from user
-    server.sin_port = htons(port); // Use htons() to convert port to network byte order
+    serversocket = socket(AF_INET,SOCK_DGRAM,0);
+    bzero((char*)&serveraddr,sizeof(serveraddr));
 
-    do
-    { // Loop until user inputs '0' (no)
-        printf("\nEnter a string to check palindrome: ");
-        scanf("%s", buffer);
-        printf("Client: %s\n", buffer);
+    len=sizeof(serveraddr);
+    serveraddr.sin_family=AF_INET;
+    serveraddr.sin_port=htons(PORT);
 
-        sendto(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&server, len); // send message to server
-        
-        recvfrom(sockfd, &flag, sizeof(flag), 0, (struct sockaddr *)&server, &len); // receive message from server
+    sendto(serversocket,"hi rohan",sizeof("hi rohan"),0,(struct sockaddr*)&serveraddr,len);
+    recvfrom(serversocket,b1,sizeof(b1),0,(struct sockaddr*)&serveraddr,&len);
+    printf("%s",b1);
 
-        if (flag == 1){
-            printf("Server: the string is a palindrome.\n");
-        }
-        else{
-            printf("Server: the string is not a palindrome.\n");
-        }
-        printf("\nDo you want to continue? (1 for yes, 0 for no): ");
-        scanf("%d", &res);
-    } while (res == 1); // Loop until user inputs '0' (no)
-
-    close(sockfd);
+    close(serversocket);
 }

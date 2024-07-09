@@ -1,9 +1,11 @@
 #include <sys/types.h>
+#include <strings.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <strings.h>
 
 #define PORT 8080
 int main(){
