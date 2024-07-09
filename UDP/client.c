@@ -10,20 +10,20 @@
 int main(){
 
     struct sockaddr_in serveraddr;
-    int serversocket;
+    int clientsocket;
     socklen_t len;
     char b1[20];
 
-    serversocket = socket(AF_INET,SOCK_DGRAM,0);
+    clientsocket = socket(AF_INET,SOCK_DGRAM,0);
     bzero((char*)&serveraddr,sizeof(serveraddr));
 
     len=sizeof(serveraddr);
     serveraddr.sin_family=AF_INET;
     serveraddr.sin_port=htons(PORT);
 
-    sendto(serversocket,"hi rohan",sizeof("hi rohan"),0,(struct sockaddr*)&serveraddr,len);
-    recvfrom(serversocket,b1,sizeof(b1),0,(struct sockaddr*)&serveraddr,&len);
+    sendto(clientsocket,"hi rohan",sizeof("hi rohan"),0,(struct sockaddr*)&serveraddr,len);
+    recvfrom(clientsocket,b1,sizeof(b1),0,(struct sockaddr*)&serveraddr,&len);
     printf("%s",b1);
 
-    close(serversocket);
+    close(clientsocket);
 }
