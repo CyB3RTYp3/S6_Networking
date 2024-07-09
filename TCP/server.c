@@ -1,53 +1,38 @@
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
 #include <unistd.h>
+#include <stdio.h>
+
 #define PORT 8080
-void main() {
-    struct sockaddr_in client, server;
-    int sockfd, n, newsockfd, g, j, left, right, flag;
-    char b1[20], b2[10], b3[10], b4[10];
+int main(){
 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    server.sin_family = AF_INET;
-    server.sin_port = htons(PORT); // Convert port to network byte order
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    int clientsocket,serversocket;
+    struct sockaddr_in serveraddr,clientaddr;
+    char b1[20];
+    socklen_t len;
 
-    printf("Binding...");
-    bind(sockfd, (struct sockaddr *)&server, sizeof(server));
+    serversocket=socket(AF_INET,SOCK_STREAM,0);
+    bzero((char*)&serveraddr,sizeof(serveraddr));
+    
+    serveraddr.sin_family=AF_INET;
+    serveraddr.sin_port=htons(PORT);
+    serveraddr.sin_addr.s_addr=INADDR_ANY;
 
-    printf("Listening...")
-    listen(sockfd, 1);
-    n = sizeof(client);
-    newsockfd = accept(sockfd, (struct sockaddr *)&client, &n);
+    bind(serversocket,(struct sockaddr*)&serveraddr,sizeof(serveraddr));
+    bzero((char*)&clientaddr,sizeof(clientaddr));
+    len=sizeof(clientaddr);
+    listen(serversocket,5);
 
-    for (;;) {
-        recv(newsockfd, b1, sizeof(b1), 0);
-        printf("\nThe string received is: %s\n", b1);
+    printf("Waiting----\n");
+    clientsocket=accept(serversocket,(struct sockaddr*)&clientaddr,&len);
 
-        if (strlen(b1) == 0)
-            flag = 1;
-        else {
-            left = 0;
-            right = strlen(b1) - 1;
-            flag = 1;
-            while (left < right && flag) {
-                if (b1[left] != b1[right])
-                    flag = 0;
-                    break;
-                else {
-                    left++;
-                    right--;
-                }
-            }
-        }
-        send(newsockfd, &flag, sizeof(int), 0);
-        continue;
-    }
+    recv(clientsocket,b1,sizeof(b1),0);
+    printf("%s\n",b1);
 
-    close(newsockfd);
-    close(sockfd);
+    send(clientsocket,"kitti monne",sizeof("kitti monne"),0);
+
+    close(clientsocket);
+    close(serversocket);
 }

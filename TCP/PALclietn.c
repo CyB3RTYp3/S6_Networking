@@ -13,8 +13,9 @@ int main()
     char buffer[20], response[2]; // Change response size to hold single character
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    bzero((char*)&serveraddr,sizeof(serveraddr));
     sever.sin_family = AF_INET;
-    sever.sin_port = htons(2000); // Use htons() to convert port to network byte order
+    sever.sin_port = htons(8080); // Use htons() to convert port to network byte order
     sever.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     connect(sockfd, (struct sockaddr *)&sever, sizeof(sever));
